@@ -6,43 +6,103 @@
     <title>Contato - Recreatur</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body.high-contrast {
+            background-color: #000;
+            color: #fff;
+        }
+
+        nav.high-contrast {
+            background-color: #222;
+            color: #fff;
+        }
+
+        footer.high-contrast {
+            background-color: #222;
+            color: #fff;
+        }
+
+        #accessibility-button {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            font-size: 0.8em; /* Tamanho menor */
+        }
+
+        #accessibility-menu {
+            display: none;
+            position: fixed;
+            top: calc(50% + 30px); /* Coloca o menu logo abaixo do botão */
+            left: 20px;
+            z-index: 1000;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .required {
+            color: red;
+            margin-left: 5px;
+        }
+
+        .error {
+            color: red;
+            display: none;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand d-flex align-items-center" href="index.html">
-            <img src="images/Logopassa.png" alt="Logo Recreatur" style="width: 200px; margin-right: 50px;"> 
-            Recreatur
+            <img src="images/Logopassa.png" alt="Logo Recreatur" class="img-fluid" style="width: 200px; margin-right: 50px;"> 
         </a>
-        <!-- Menu de navegação -->
     </nav>
+
+    <div class="container mt-3">
+        <div id="accessibility-menu" class="bg-light border rounded p-3">
+            <h6>Acessibilidade</h6>
+            <button class="btn btn-secondary btn-sm" onclick="increaseFontSize()">Aumentar Fonte</button>
+            <button class="btn btn-secondary btn-sm" onclick="decreaseFontSize()">Diminuir Fonte</button>
+            <button class="btn btn-secondary btn-sm" onclick="toggleContrast()">Alterar Contraste</button>
+            <button class="btn btn-secondary btn-sm" onclick="hideText()">Ocultar Texto</button>
+        </div>
+        <button id="accessibility-button" class="btn btn-secondary" onclick="toggleAccessibilityMenu()">Acessibilidade</button>
+    </div>
 
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
                 <h1>Sobre Nós</h1>
                 <p>Informações de contato:</p>
-                <p>Telefone: (11) 99757-9540</p>
-                <p>Email: passatempo@passatempoeducativo.org.br</p>
+                <p>Telefone: <a href="tel:+5511997579540">(11) 99757-9540</a></p>
+                <p>Email: <a href="mailto:passatempo@passatempoeducativo.org.br">passatempo@passatempoeducativo.org.br</a></p>
                 <h3>SIGA-NOS</h3>
                 <div>
-                    <a href="https://www.instagram.com/passatempoeducativo/?hl=pt-br" class="fab fa-instagram" target="_blank" style="font-size: 24px; margin-right: 15px;"></a>
-                    <a href="https://pt-br.facebook.com/Passatempoedu?ref=stream&hc_location=stream&filter=2" class="fab fa-facebook" target="_blank" style="font-size: 24px;"></a>
+                    <a href="https://www.instagram.com/passatempoeducativo/?hl=pt-br" class="fab fa-instagram" target="_blank" title="Siga-nos no Instagram" style="font-size: 24px; margin-right: 15px;"></a>
+                    <a href="https://pt-br.facebook.com/Passatempoedu?ref=stream&hc_location=stream&filter=2" class="fab fa-facebook" target="_blank" title="Siga-nos no Facebook" style="font-size: 24px;"></a>
                 </div>
             </div>
             <div class="col-md-6">
                 <h2>Contato</h2>
-                <form>
+                <form id="contact-form" onsubmit="return validateForm()">
                     <div class="form-group">
-                        <label for="nome">Nome</label>
+                        <label for="nome">Nome <span class="required">*</span></label>
                         <input type="text" class="form-control" id="nome" placeholder="Seu Nome" required>
+                        <div class="error" id="error-nome">Preenchimento obrigatório</div>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">Email <span class="required">*</span></label>
                         <input type="email" class="form-control" id="email" placeholder="Seu Email" required>
+                        <div class="error" id="error-email">Preenchimento obrigatório</div>
                     </div>
                     <div class="form-group">
-                        <label for="mensagem">Mensagem</label>
+                        <label for="mensagem">Mensagem <span class="required">*</span></label>
                         <textarea class="form-control" id="mensagem" rows="4" placeholder="Sua Mensagem" required></textarea>
+                        <div class="error" id="error-mensagem">Preenchimento obrigatório</div>
                     </div>
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </form>
@@ -51,7 +111,78 @@
     </div>
 
     <footer class="bg-light text-center py-4">
-        <p>&copy; 2024 Passatempo Educativo. Todos os direitos reservados.</p>
+        <p>&copy; 2024 Recreatur. Todos os direitos reservados.</p>
     </footer>
+
+    <script>
+        let fontSizeLevel = 0; // 0 = normal, 1 = aumento 1, 2 = aumento 2, 3 = aumento 3
+        let isHighContrast = false;
+        let isTextHidden = false;
+
+        function toggleAccessibilityMenu() {
+            const menu = document.getElementById('accessibility-menu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function increaseFontSize() {
+            if (fontSizeLevel < 3) {
+                fontSizeLevel++;
+                document.body.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em'; // Aumenta a fonte
+            }
+        }
+
+        function decreaseFontSize() {
+            if (fontSizeLevel > 0) {
+                fontSizeLevel--;
+                document.body.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em'; // Diminui a fonte
+            }
+        }
+
+        function toggleContrast() {
+            const body = document.body;
+            const nav = document.querySelector('nav');
+            const footer = document.querySelector('footer');
+            isHighContrast = !isHighContrast;
+
+            if (isHighContrast) {
+                body.classList.add('high-contrast');
+                nav.classList.add('high-contrast');
+                footer.classList.add('high-contrast');
+            } else {
+                body.classList.remove('high-contrast');
+                nav.classList.remove('high-contrast');
+                footer.classList.remove('high-contrast');
+            }
+        }
+
+        function hideText() {
+            const body = document.body;
+            isTextHidden = !isTextHidden;
+
+            if (isTextHidden) {
+                body.querySelectorAll('h1, h2, p, label').forEach(el => el.style.display = 'none');
+            } else {
+                body.querySelectorAll('h1, h2, p, label').forEach(el => el.style.display = '');
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            const fields = ['nome', 'email', 'mensagem'];
+            fields.forEach(field => {
+                const input = document.getElementById(field);
+                const error = document.getElementById(`error-${field}`);
+                if (!input.value) {
+                    isValid = false;
+                    error.style.display = 'block'; // Mostra o erro
+                } else {
+                    error.style.display = 'none'; // Esconde o erro
+                }
+            });
+
+            return isValid; // Retorna false se algum campo não for válido
+        }
+    </script>
 </body>
 </html>
