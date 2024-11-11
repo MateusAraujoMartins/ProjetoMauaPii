@@ -7,42 +7,78 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* Estilos para o modo de contraste alto */
         body.high-contrast {
             background-color: #000;
             color: #fff;
         }
 
-        nav.high-contrast {
+        nav.high-contrast, footer.high-contrast {
             background-color: #222;
             color: #fff;
         }
 
-        footer.high-contrast {
-            background-color: #222;
-            color: #fff;
-        }
+        /* Botão fixo de acessibilidade */
+#accessibility-button {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 1000;
+    background-color: #007bff;
+    color: white;
+    border-radius: 0;  /* Retângulo sem bordas arredondadas */
+    padding: 10px 20px; /* Ajustado para dar um formato retangular */
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-        #accessibility-button {
-            position: fixed;
-            top: 50%;
-            left: 20px;
-            transform: translateY(-50%);
-            z-index: 1000;
-            font-size: 0.8em; /* Tamanho menor */
-        }
+/* Alteração do botão para contraste alto */
+body.high-contrast #accessibility-button {
+    background-color: #ffcc00;
+    color: #000;
+}
 
+#accessibility-button:hover {
+    background-color: #0056b3;
+}
+
+        /* Menu de acessibilidade */
         #accessibility-menu {
             display: none;
             position: fixed;
-            top: calc(50% + 30px); /* Coloca o menu logo abaixo do botão */
+            top: calc(50% + 40px);
             left: 20px;
             z-index: 1000;
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 10px;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
         }
 
+        /* Estilos dos botões dentro do menu de acessibilidade */
+        .accessibility-button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .accessibility-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mensagens de erro em vermelho */
         .required {
             color: red;
             margin-left: 5px;
@@ -53,6 +89,16 @@
             display: none;
             font-size: 0.9em;
         }
+
+        /* Ajuste de fonte para o conteúdo da página */
+        .content {
+            font-size: 1em;
+        }
+
+        /* Não afeta o botão de acessibilidade */
+        #accessibility-button, #accessibility-menu {
+            font-size: 16px !important;
+        }
     </style>
 </head>
 <body>
@@ -62,20 +108,22 @@
         </a>
     </nav>
 
-    <div class="container mt-3">
-        <div id="accessibility-menu" class="bg-light border rounded p-3">
-            <h6>Acessibilidade</h6>
-            <button class="btn btn-secondary btn-sm" onclick="increaseFontSize()">Aumentar Fonte</button>
-            <button class="btn btn-secondary btn-sm" onclick="decreaseFontSize()">Diminuir Fonte</button>
-            <button class="btn btn-secondary btn-sm" onclick="toggleContrast()">Alterar Contraste</button>
-            <button class="btn btn-secondary btn-sm" onclick="hideText()">Ocultar Texto</button>
-        </div>
-        <button id="accessibility-button" class="btn btn-secondary" onclick="toggleAccessibilityMenu()">Acessibilidade</button>
+    <!-- Seção de Acessibilidade -->
+    <div id="accessibility-menu">
+        <h6>Acessibilidade</h6>
+        <!-- Botões de interação para aumentar/diminuir fonte, alterar contraste e ocultar texto -->
+        <button class="accessibility-button" onclick="increaseFontSize()">Aumentar Fonte</button>
+        <button class="accessibility-button" onclick="decreaseFontSize()">Diminuir Fonte</button>
+        <button class="accessibility-button" onclick="toggleContrast()">Alterar Contraste</button>
+        <button class="accessibility-button" onclick="hideText()">Ocultar Texto</button>
     </div>
+
+    <!-- Botão para abrir o menu de acessibilidade -->
+    <button id="accessibility-button" onclick="toggleAccessibilityMenu()">Acessibilidade</button>
 
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 content">
                 <h1>Sobre Nós</h1>
                 <p>Informações de contato:</p>
                 <p>Telefone: <a href="tel:+5511997579540">(11) 99757-9540</a></p>
@@ -86,7 +134,7 @@
                     <a href="https://pt-br.facebook.com/Passatempoedu?ref=stream&hc_location=stream&filter=2" class="fab fa-facebook" target="_blank" title="Siga-nos no Facebook" style="font-size: 24px;"></a>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 content">
                 <h2>Contato</h2>
                 <form id="contact-form" onsubmit="return validateForm()">
                     <div class="form-group">
@@ -115,7 +163,7 @@
     </footer>
 
     <script>
-        let fontSizeLevel = 0; // 0 = normal, 1 = aumento 1, 2 = aumento 2, 3 = aumento 3
+        let fontSizeLevel = 0;
         let isHighContrast = false;
         let isTextHidden = false;
 
@@ -127,14 +175,18 @@
         function increaseFontSize() {
             if (fontSizeLevel < 3) {
                 fontSizeLevel++;
-                document.body.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em'; // Aumenta a fonte
+                document.querySelectorAll('.content').forEach((el) => {
+                    el.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em';
+                });
             }
         }
 
         function decreaseFontSize() {
             if (fontSizeLevel > 0) {
                 fontSizeLevel--;
-                document.body.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em'; // Diminui a fonte
+                document.querySelectorAll('.content').forEach((el) => {
+                    el.style.fontSize = (1 + fontSizeLevel * 0.25) + 'em';
+                });
             }
         }
 
@@ -160,29 +212,44 @@
             isTextHidden = !isTextHidden;
 
             if (isTextHidden) {
-                body.querySelectorAll('h1, h2, p, label').forEach(el => el.style.display = 'none');
+                body.querySelectorAll('.content h1, .content h2, .content p, .content label').forEach(el => el.style.display = 'none');
             } else {
-                body.querySelectorAll('h1, h2, p, label').forEach(el => el.style.display = '');
+                body.querySelectorAll('.content h1, .content h2, .content p, .content label').forEach(el => el.style.display = 'block');
             }
         }
 
         function validateForm() {
+            const nome = document.getElementById('nome');
+            const email = document.getElementById('email');
+            const mensagem = document.getElementById('mensagem');
             let isValid = true;
 
-            const fields = ['nome', 'email', 'mensagem'];
-            fields.forEach(field => {
-                const input = document.getElementById(field);
-                const error = document.getElementById(`error-${field}`);
-                if (!input.value) {
-                    isValid = false;
-                    error.style.display = 'block'; // Mostra o erro
-                } else {
-                    error.style.display = 'none'; // Esconde o erro
-                }
-            });
+            if (!nome.value) {
+                document.getElementById('error-nome').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('error-nome').style.display = 'none';
+            }
 
-            return isValid; // Retorna false se algum campo não for válido
+            if (!email.value) {
+                document.getElementById('error-email').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('error-email').style.display = 'none';
+            }
+
+            if (!mensagem.value) {
+                document.getElementById('error-mensagem').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('error-mensagem').style.display = 'none';
+            }
+
+            return isValid;
         }
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

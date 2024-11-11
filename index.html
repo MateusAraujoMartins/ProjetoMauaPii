@@ -46,24 +46,32 @@
         <!-- Grid de Cartões -->
 <div class="grid">
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão1.jpg" alt="" class="foto" onclick="openModal(this)">
     </div>
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão2.jpg" alt="" class="foto" onclick="openModal(this)">
     </div>
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão3.jpg" alt="" class="foto" onclick="openModal(this)">
     </div>
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão4.jpg" alt="" class="foto" onclick="openModal(this)">
     </div>
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão5.png" alt="" class="foto" onclick="openModal(this)">
     </div>
     <div class="card">
-        <img src="images/criancas-em-tiro-medio-segurando-baloes_23-2149073595.avif" alt="Nome do Membro 1" class="foto">
+        <img src="images/gridcartão6.jpg" alt="" class="foto" onclick="openModal(this)">
     </div>
 </div>
+
+<!-- Modal para mostrar a imagem em tamanho maior -->
+<div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div id="caption"></div>
+</div>
+
 
 <div class="recreatur-section">
     <div class="recreatur-content">
@@ -150,5 +158,11 @@
     // Executa a função quando a página é carregada
     window.onload = checkCookies;
 </script>
+
+
+<!-- Referência ao arquivo JavaScript -->
+<script src="script.js"></script>
+
+
 </body>
 </html>
