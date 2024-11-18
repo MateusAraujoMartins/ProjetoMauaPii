@@ -1,7 +1,92 @@
-// script.js
-const mongoose = require('mongoose');
-const express = require('express');
+const mongoose = require("mongoose");
+const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
+const dns = require("dns");
+
+// Configuração de DNS para priorizar IPv4
+dns.setDefaultResultOrder("ipv4first");
+
+// Configuração do MongoDB
+const uri = `mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/dbcontato?retryWrites=true&w=majority`;
+const MongoClient = require("mongodb").MongoClient;
+const client = new MongoClient(uri); // Remove o directConnection
+
+// Middleware para processar corpo de requisições
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+// Configuração do servidor
+console.log("server up & running");
+
+// Rota GET para "/contato"
+app.get("/contato", async (req, resp) => {
+    try {
+      const db = client.db("dbcontato"); // Conexão já aberta ao cliente
+      const contatos = await db.collection("contato").find().toArray();
+      resp.render("contato", { posts: novoContato});
+    } catch (err) {
+      console.error("Erro ao buscar contatos:", err);
+      resp.status(500).send("Erro interno do servidor");
+    }
+  });
+  
+  
+ let db;
+
+client.connect((err) => {
+    if (err) {
+        console.error("Erro ao conectar ao banco de dados:", err);
+        process.exit(1);
+    }
+    db = client.db("dbcontato");
+    console.log("Conectado ao banco de dados!");
+});
+
+app.get("/contato", async (req, resp) => {
+  try {
+      const db = client.db("dbcontato");
+      const contatos = await db.collection("contato").find().toArray();
+      resp.render("contato", { posts: contatos }); 
+  } catch (err) {
+      console.error("Erro ao buscar contatos:", err);
+      resp.status(500).send("Erro interno do servidor");
+  }
+});
+
+
+app.post("/post", function (req, resp) {
+    db.collection("contato").insertOne(
+        {
+            db_nome: req.body.nome,
+            db_email: req.body.email,
+            db_mensagem: req.body.mensagem,
+        },
+        (err) => {
+            if (err) {
+                resp.render("resposta", { resposta: "Falha ao contatar" });
+            } else {
+                db.collection("contato").find().toArray((err, items) => {
+                    if (err) {
+                        console.error(err);
+                        return resp.status(500).send("Erro ao buscar dados.");
+                    }
+                    resp.render("contato", { posts: items });
+                });
+            }
+        }
+    );
+});
+
+  
+  
+
+// Inicia o servidor na porta 3000
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
 
 function openModal(imgElement) {
     var modal = document.getElementById("imageModal");
@@ -18,78 +103,11 @@ function closeModal() {
     modal.style.display = "none";
 }
 
-// Modelo do Mongoose
-const Contato = mongoose.model("Contato", mongoose.Schema({
-    nome: { type: String },
-    email: { type: String },
-    mensagem: { type: String }
-}));
+app.post('/contato', (req, res) => {
+    // Lógica de processamento do formulário
+    res.send('Formulário enviado com sucesso');
+});
 
-// Função para conectar ao MongoDB
-async function conectarAoMongoDB() {
-    try {
-        await mongoose.connect(`mongodb://PIMaua:<PiMaua>@<hostname>/?ssl=true&replicaSet=atlas-105hv7-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0`, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        console.log("Conectado ao MongoDB com sucesso!");
-    } catch (error) {
-        console.error("Erro ao conectar ao MongoDB:", error);
-    }
-}
 
-// Inicializando o servidor e conectando ao MongoDB
-async function startServer() {
-    await conectarAoMongoDB();
-    app.listen(3000, () => {
-        console.log("Servidor rodando na porta 3000");
-    });
-}
-
-startServer();
-
-async function criarContato(nome, email, mensagem) {
-    const novoContato = new Contato({ nome, email, mensagem });
-    try {
-        await novoContato.save();
-        console.log("Contato salvo com sucesso:", novoContato);
-    } catch (error) {
-        console.error("Erro ao salvar contato:", error);
-    }
-}
-
-async function buscarContatos() {
-    try {
-        const contatos = await Contato.find();
-        console.log("Contatos encontrados:", contatos);
-        return contatos;
-    } catch (error) {
-        console.error("Erro ao buscar contatos:", error);
-    }
-}
-async function buscarContatoPorNome(nome) {
-    try {
-        const contato = await Contato.findOne({ nome });
-        console.log("Contato encontrado:", contato);
-        return contato;
-    } catch (error) {
-        console.error("Erro ao buscar contato:", error);
-    }
-}
-async function atualizarContato(nome, novosDados) {
-    try {
-        const contatoAtualizado = await Contato.findOneAndUpdate({ nome }, novosDados, { new: true });
-        console.log("Contato atualizado:", contatoAtualizado);
-    } catch (error) {
-        console.error("Erro ao atualizar contato:", error);
-    }
-}
-async function excluirContato(nome) {
-    try {
-        const resultado = await Contato.findOneAndDelete({ nome });
-        console.log("Contato excluído:", resultado);
-    } catch (error) {
-        console.error("Erro ao excluir contato:", error);
-    }
-}
+app.use(express.urlencoded({ extended: true })); // Necessário para capturar dados de formulários
 

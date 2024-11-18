@@ -136,7 +136,7 @@ body.high-contrast #accessibility-button {
             </div>
             <div class="col-md-6 content">
                 <h2>Contato</h2>
-                <form id="contact-form" onsubmit="return validateForm()">
+                <form id="contact-form" onsubmit="return validateForm()" action="/post" method="post">
                     <div class="form-group">
                         <label for="nome">Nome <span class="required">*</span></label>
                         <input type="text" class="form-control" id="nome" placeholder="Seu Nome" required>
