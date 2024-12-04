@@ -103,7 +103,7 @@ body.high-contrast #accessibility-button {
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <a class="navbar-brand d-flex align-items-center" href="index.html" tabindex="0">
             <img src="images/Logopassa.png" alt="Logo Recreatur" class="img-fluid" style="width: 200px; margin-right: 50px;"> 
         </a>
     </nav>
@@ -126,17 +126,17 @@ body.high-contrast #accessibility-button {
             <div class="col-md-6 content">
                 <h1>Sobre Nós</h1>
                 <p>Informações de contato:</p>
-                <p>Telefone: <a href="tel:+5511997579540">(11) 99757-9540</a></p>
-                <p>Email: <a href="mailto:passatempo@passatempoeducativo.org.br">passatempo@passatempoeducativo.org.br</a></p>
+                <p>Telefone: <a href="tel:+5511997579540" tabindex="0">(11) 99757-9540</a></p>
+                <p>Email: <a href="mailto:passatempo@passatempoeducativo.org.br" tabindex="0">passatempo@passatempoeducativo.org.br</a></p>
                 <h3>SIGA-NOS</h3>
                 <div>
-                    <a href="https://www.instagram.com/passatempoeducativo/?hl=pt-br" class="fab fa-instagram" target="_blank" title="Siga-nos no Instagram" style="font-size: 24px; margin-right: 15px;"></a>
-                    <a href="https://pt-br.facebook.com/Passatempoedu?ref=stream&hc_location=stream&filter=2" class="fab fa-facebook" target="_blank" title="Siga-nos no Facebook" style="font-size: 24px;"></a>
+                    <a href="https://www.instagram.com/passatempoeducativo/?hl=pt-br" class="fab fa-instagram" target="_blank" title="Siga-nos no Instagram" style="font-size: 24px; margin-right: 15px;" tabindex="0"></a>
+                    <a href="https://pt-br.facebook.com/Passatempoedu?ref=stream&hc_location=stream&filter=2" class="fab fa-facebook" target="_blank" title="Siga-nos no Facebook" style="font-size: 24px;" tabindex="0"></a>
                 </div>
             </div>
             <div class="col-md-6 content">
                 <h2>Contato</h2>
-                <form id="contact-form" onsubmit="return validateForm()" action="/post" method="post">
+                <form id="contact-form" onsubmit="return validateForm()">
                     <div class="form-group">
                         <label for="nome">Nome <span class="required">*</span></label>
                         <input type="text" class="form-control" id="nome" placeholder="Seu Nome" required>
@@ -251,5 +251,6 @@ body.high-contrast #accessibility-button {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>

@@ -3,16 +3,20 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const dns = require("dns");
+const cors = require ('cors')
 
-// Configuração de DNS para priorizar IPv4
+app.use(cors())
+
+
 dns.setDefaultResultOrder("ipv4first");
 
-// Configuração do MongoDB
-const uri = `mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/dbcontato?retryWrites=true&w=majority`;
+//configuração do mongodb
+const uri = `mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const MongoClient = require("mongodb").MongoClient;
-const client = new MongoClient(uri); // Remove o directConnection
+const client = new MongoClient(uri); 
 
-// Middleware para processar corpo de requisições
+mongoose.connect(`mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -21,7 +25,7 @@ app.use(bodyParser.json());
 console.log("server up & running");
 
 // Rota GET para "/contato"
-app.get("/contato", async (req, resp) => {
+/*app.get("/contato", async (req, resp) => {
     try {
       const db = client.db("dbcontato"); // Conexão já aberta ao cliente
       const contatos = await db.collection("contato").find().toArray();
@@ -30,7 +34,11 @@ app.get("/contato", async (req, resp) => {
       console.error("Erro ao buscar contatos:", err);
       resp.status(500).send("Erro interno do servidor");
     }
-  });
+  });*/
+
+  app.get("/contato", (req, res) => {
+    res.json(contato)
+    })
   
   
  let db;
@@ -44,19 +52,19 @@ client.connect((err) => {
     console.log("Conectado ao banco de dados!");
 });
 
-app.get("/contato", async (req, resp) => {
-  try {
-      const db = client.db("dbcontato");
-      const contatos = await db.collection("contato").find().toArray();
-      resp.render("contato", { posts: contatos }); 
-  } catch (err) {
-      console.error("Erro ao buscar contatos:", err);
-      resp.status(500).send("Erro interno do servidor");
-  }
-});
+/*app.post("/post", (req, res) => {
+    const nome = req.body.nome
+    const email = req.body.email
+    const mensagem = req.body.mensagem
+    
+    const contato = {nome: nome, email: email, mensagem: mensagem}
+    
+    contato.push(contato)
+    
+    res.json(contato)
+    })*/
 
-
-app.post("/post", function (req, resp) {
+app.post("/contato", function (req, resp) {
     db.collection("contato").insertOne(
         {
             db_nome: req.body.nome,
