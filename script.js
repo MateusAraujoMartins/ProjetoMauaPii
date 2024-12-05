@@ -6,16 +6,17 @@ const dns = require("dns");
 const cors = require ('cors')
 
 app.use(cors())
-
+"use client";
+import {useState} from "react";
 
 dns.setDefaultResultOrder("ipv4first");
 
 //configuração do mongodb
-const uri = `mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/dbcontato`;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(uri); 
 
-mongoose.connect(`mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
+mongoose.connect(`mongodb+srv://PIMaua:PiMaua@cluster0.mefla.mongodb.net/dbcontato`)
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,17 +25,11 @@ app.use(bodyParser.json());
 // Configuração do servidor
 console.log("server up & running");
 
-// Rota GET para "/contato"
-/*app.get("/contato", async (req, resp) => {
-    try {
-      const db = client.db("dbcontato"); // Conexão já aberta ao cliente
-      const contatos = await db.collection("contato").find().toArray();
-      resp.render("contato", { posts: novoContato});
-    } catch (err) {
-      console.error("Erro ao buscar contatos:", err);
-      resp.status(500).send("Erro interno do servidor");
-    }
-  });*/
+export default function ContactForm(){
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [mensagem, setMensagem] = useState("");
+}
 
   app.get("/contato", (req, res) => {
     res.json(contato)
@@ -51,18 +46,6 @@ client.connect((err) => {
     db = client.db("dbcontato");
     console.log("Conectado ao banco de dados!");
 });
-
-/*app.post("/post", (req, res) => {
-    const nome = req.body.nome
-    const email = req.body.email
-    const mensagem = req.body.mensagem
-    
-    const contato = {nome: nome, email: email, mensagem: mensagem}
-    
-    contato.push(contato)
-    
-    res.json(contato)
-    })*/
 
 app.post("/contato", function (req, resp) {
     db.collection("contato").insertOne(
